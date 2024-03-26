@@ -4,7 +4,8 @@ const {    getAllUsers,
     getUserById,
     insertNewUser,
     loginUser,
-    updateExistingUser, } = require('../controloers/recipmeController')
+    updateExistingUser,
+    deleteUser, } = require('../controloers/recipmeController')
 const verifyToken = require('../middlewares/verifyToken')
 const express = require('express');
 
@@ -15,6 +16,7 @@ router.get('/recipes', getAllRecipes)
 router.get('/:id', getUserById);
 router.post('/register', insertNewUser)
 router.post('/login', loginUser)
+router.delete('/:id', deleteUser)
 // router.put('/:id', updateExistingUser)
 router.get('/verify', verifyToken, (req,res) =>{
 

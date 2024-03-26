@@ -29,16 +29,25 @@ const _updateExistingUser = (id, username, email, firstname, lastname) =>{
 }
 
 
-const _loginUser = (email, password_hash) =>{
-    return db('users').where({email, password_hash}).first()
+const _loginUser = (email) =>{
+    return db('users').where({email}).first()
 }
 
-// const _insertHashedPassword = (password_hash, username) => {
-//     return db('users').insert({password_hash, username},['*']);
-// };
 
 const _getUserByUsername = (username) => {
     return db('users').whereILike('username', username)
+}
+
+const _deleteuser = (id) =>{
+    return db('users').where({user_id: id}).del()
+}
+
+const _addRecipe = (recipe_name, recipe_description, recipe_instructions, user_id) =>{
+    return db('recipes').insert({recipe_name, recipe_description, recipe_instructions, user_id})
+}
+
+const _deleteRecipe = () =>{
+    return db('recipes').where({recipe_id: id}).del()
 }
 
 
@@ -49,7 +58,7 @@ module.exports = {
     _getUserById,
     _insertNewUser,
     _updateExistingUser,
-    // _insertHashedPassword,
+    _deleteuser,
     _loginUser,
     _getUserByUsername
 }
