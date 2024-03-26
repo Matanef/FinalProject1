@@ -6,7 +6,9 @@ const {     _getAllUsers,
     _updateExistingUser,
     _loginUser,
     _getUserByUsername,
-    _deleteuser } = require('../models/recipmemodels');
+    _deleteuser,
+    _addRecipe,
+    _deleteRecipe } = require('../models/recipmemodels');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
@@ -150,6 +152,53 @@ const deleteUser = async (req,res) => {
     }
 }
 
+const updateExistingUser = async (req,res) =>{
+    const { id } = req.params;
+    const {username, email, firstname, lastname} = req.body;
+        try {
+            if(!id){
+                return res.status(400).json({message: "User ID is required"})
+            }
+
+            const updatedUser =  await _updateExistingUser(id, username, email, firstname, lastname)
+            console.log(updatedUser);
+            if(updatedUser.length === 0){
+                return res.status(404).json({message: "User not found"})
+            }
+            res.status(200).json({message: "User updated successfully"})
+        } catch (error) {
+            console.log('Error ==>', error);
+            res.status(500).json({message: "Failed to update user"})
+        }
+    
+}
+
+const addRecipe = async (req,res) => {
+    const {recipe_name, recipe_description, recipe_instructions, user_id} = req.body
+    try {
+        const recipe = await _addRecipe(recipe_name, recipe_description, recipe_instructions, user_id);
+        res.json(recipe)
+    } catch (error) {
+        console.log(error);
+        res.status(404).json({msg: "Error in adding recipe"})
+    }
+}
+
+const deleteRecipe = async (req,res) =>{
+    const {recipe_id} = req.body;
+    console.log(recipe_id);
+    try {
+        await _deleteRecipe(recipe_id)
+            res.status(200).json({message: 'Recipe deleted'})
+        }
+    catch (error) {
+        console.log(error);
+        res.status(404).json({message: 'Recipe Id requierd'})
+        
+    }
+}
+
+
 
 
 module.exports = {
@@ -160,4 +209,7 @@ module.exports = {
     insertNewUser,
     loginUser,
     deleteUser,
+    updateExistingUser,
+    addRecipe,
+    deleteRecipe
 };

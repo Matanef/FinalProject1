@@ -9,13 +9,13 @@ const _getAllIngredients = () =>{
 }
 
 const _getAllRecipes = () => { 
-    return db('recipes').select('recipe_name')
+    return db('recipes').select('recipe_id', 'recipe_name', "recipe_description")
 }
 
 const _getUserById = (id) => {
     return db('users')
     .where(id)
-    .select('id', 'first_name', 'last_name', 'username', 'email')
+    .select('user_id', 'first_name', 'last_name', 'username', 'email')
 }
 
 const _insertNewUser = (username, email, password_hash, salt, firstname, lastname) =>{
@@ -23,10 +23,16 @@ const _insertNewUser = (username, email, password_hash, salt, firstname, lastnam
 }
 
 const _updateExistingUser = (id, username, email, firstname, lastname) =>{
+    console.log(username);
     return db('users')
-    .where({id})
-    .update({username, email, firstname, lastname}, ['*'])
-}
+    .where({ user_id: id })
+    .update({
+      email: email,
+      username: username,
+      firstname: firstname,
+      lastname: lastname
+    })
+  }
 
 
 const _loginUser = (email) =>{
@@ -43,10 +49,14 @@ const _deleteuser = (id) =>{
 }
 
 const _addRecipe = (recipe_name, recipe_description, recipe_instructions, user_id) =>{
-    return db('recipes').insert({recipe_name, recipe_description, recipe_instructions, user_id})
+    return db('recipes').insert({
+        recipe_name: recipe_name,
+        recipe_description: recipe_description,
+        recipe_instructions: recipe_instructions,
+        user_id: user_id})
 }
 
-const _deleteRecipe = () =>{
+const _deleteRecipe = (id) =>{
     return db('recipes').where({recipe_id: id}).del()
 }
 
@@ -60,5 +70,7 @@ module.exports = {
     _updateExistingUser,
     _deleteuser,
     _loginUser,
-    _getUserByUsername
+    _getUserByUsername,
+    _addRecipe,
+    _deleteRecipe
 }
