@@ -60,6 +60,17 @@ const _deleteRecipe = (id) =>{
     return db('recipes').where({recipe_id: id}).del()
 }
 
+const _editRecipe = (recipe_id, recipe_name, recipe_description, recipe_instructions) => {
+    console.log(recipe_id, recipe_name);
+    return db('recipes')
+    .where({recipe_id: recipe_id})
+    .update({        
+        recipe_name: recipe_name,
+        recipe_description: recipe_description,
+        recipe_instructions: recipe_instructions,
+    })
+}
+
 
 module.exports = {
     _getAllUsers,
@@ -72,5 +83,6 @@ module.exports = {
     _loginUser,
     _getUserByUsername,
     _addRecipe,
-    _deleteRecipe
+    _deleteRecipe,
+    _editRecipe
 }

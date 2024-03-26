@@ -1,4 +1,5 @@
-const {     _getAllUsers,
+const {     
+    _getAllUsers,
     _getAllIngredients,
     _getAllRecipes,
     _getUserById,
@@ -8,7 +9,9 @@ const {     _getAllUsers,
     _getUserByUsername,
     _deleteuser,
     _addRecipe,
-    _deleteRecipe } = require('../models/recipmemodels');
+    _deleteRecipe,
+    _editRecipe 
+    } = require('../models/recipmemodels');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
@@ -186,7 +189,7 @@ const addRecipe = async (req,res) => {
 
 const deleteRecipe = async (req,res) =>{
     const {recipe_id} = req.body;
-    console.log(recipe_id);
+    console.log(`recipe no. ${recipe_id} was deleted`);
     try {
         await _deleteRecipe(recipe_id)
             res.status(200).json({message: 'Recipe deleted'})
@@ -197,6 +200,28 @@ const deleteRecipe = async (req,res) =>{
         
     }
 }
+
+const editRecipe = async (req,res) => {
+    const { recipe_id } = req.body
+    const {recipe_name, recipe_description, recipe_instructions} = req.body
+    console.log(recipe_id);
+    console.log(recipe_name);
+    try {
+        if(!recipe_id){
+            return res.status(400).json({message: "Recipe ID not found"})
+        }
+
+        const editedRecipe =  await _editRecipe(recipe_id, recipe_name, recipe_description, recipe_instructions)
+        console.log(editedRecipe);
+        if(editedRecipe.length === 0){
+            return res.status(404).json({message: "Recipe not found"})
+        }
+        res.status(200).json({message: "Recipe updated successfully"})
+    } catch (error) {
+        console.log('Error ==>', error);
+        res.status(500).json({message: "Failed to update recipe"})
+    }
+} 
 
 
 
@@ -211,5 +236,6 @@ module.exports = {
     deleteUser,
     updateExistingUser,
     addRecipe,
-    deleteRecipe
+    deleteRecipe,
+    editRecipe
 };
